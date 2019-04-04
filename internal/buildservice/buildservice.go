@@ -43,7 +43,6 @@ func proxyRequest(w http.ResponseWriter, r *http.Request, s *api.BuildServiceSet
 		transportWithTimeouts.TLSClientConfig = &tls.Config{RootCAs: pool}
 	}
 
-	// resp, err := defaultTransport.RoundTrip(r)
 	resp, err := httpTransport.RoundTrip(r)
 
 	if err != nil {

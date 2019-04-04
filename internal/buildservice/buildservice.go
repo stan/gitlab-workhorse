@@ -37,8 +37,6 @@ func proxyRequest(w http.ResponseWriter, r *http.Request, s *api.BuildServiceSet
 		return
 	}
 
-	// defaultTransport := http.DefaultTransport.(*http.Transport)
-
 	if len(s.CAPem) > 0 {
 		pool := x509.NewCertPool()
 		pool.AppendCertsFromPEM([]byte(s.CAPem))

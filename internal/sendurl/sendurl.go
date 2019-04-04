@@ -7,9 +7,6 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	// "gitlab.com/gitlab-org/labkit/correlation"
-	// "gitlab.com/gitlab-org/labkit/tracing"
-
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"

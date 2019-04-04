@@ -8,7 +8,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
 )
 
-type BuildServiceSettings struct {
+type ServiceProxySettings struct {
 	// The URL to connect to.
 	Url string
 
@@ -20,18 +20,18 @@ type BuildServiceSettings struct {
 	CAPem string
 }
 
-func (t *BuildServiceSettings) URL() (*url.URL, error) {
+func (t *ServiceProxySettings) URL() (*url.URL, error) {
 	return url.Parse(t.Url)
 }
 
-func (t *BuildServiceSettings) Clone() *BuildServiceSettings {
+func (t *ServiceProxySettings) Clone() *ServiceProxySettings {
 	// Doesn't clone the strings, but that's OK as strings are immutable in go
 	cloned := *t
 	cloned.Header = helper.HeaderClone(t.Header)
 	return &cloned
 }
 
-func (t *BuildServiceSettings) Validate() error {
+func (t *ServiceProxySettings) Validate() error {
 	if t == nil {
 		return fmt.Errorf("service details not specified")
 	}
@@ -48,7 +48,7 @@ func (t *BuildServiceSettings) Validate() error {
 	return nil
 }
 
-func (t *BuildServiceSettings) IsEqual(other *BuildServiceSettings) bool {
+func (t *ServiceProxySettings) IsEqual(other *ServiceProxySettings) bool {
 	if t == nil && other == nil {
 		return true
 	}

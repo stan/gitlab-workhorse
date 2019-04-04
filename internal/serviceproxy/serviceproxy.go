@@ -1,4 +1,4 @@
-package buildservice
+package serviceproxy
 
 import (
 	"crypto/tls"
@@ -13,14 +13,14 @@ import (
 
 func Handler(myAPI *api.API) http.Handler {
 	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
-		if err := a.BuildService.Validate(); err != nil {
+		if err := a.Service.Validate(); err != nil {
 			helper.Fail500(w, r, err)
 			return
 		}
 
-		r.Header.Add("Authorization", a.BuildService.Header.Get("Authorization"))
+		r.Header.Add("Authorization", a.Service.Header.Get("Authorization"))
 
-		proxyRequest(w, r, a.BuildService)
+		proxyRequest(w, r, a.Service)
 	}, "authorize")
 }
 
@@ -28,7 +28,7 @@ var transportWithTimeouts = transporthelper.TransportWithTimeouts()
 
 var httpTransport = transporthelper.TracingRoundTripper(transportWithTimeouts)
 
-func proxyRequest(w http.ResponseWriter, r *http.Request, s *api.BuildServiceSettings) {
+func proxyRequest(w http.ResponseWriter, r *http.Request, s *api.ServiceProxySettings) {
 	var err error
 
 	r.URL, err = s.URL()

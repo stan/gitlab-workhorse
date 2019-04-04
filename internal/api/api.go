@@ -126,7 +126,7 @@ type Response struct {
 	// Used to communicate channel session details
 	Channel *ChannelSettings
 	// Used to communicate service HTTP proxy details
-	BuildService *BuildServiceSettings
+	Service *ServiceProxySettings
 	// GitalyServer specifies an address and authentication token for a gitaly server we should connect to.
 	GitalyServer gitaly.Server
 	// Repository object for making gRPC requests to Gitaly.

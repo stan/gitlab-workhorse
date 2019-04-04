@@ -13,7 +13,6 @@ import (
 	apipkg "gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/artifacts"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/builds"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/buildservice"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/channel"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/git"
@@ -26,6 +25,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/sendfile"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/sendurl"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/serviceproxy"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/staticpages"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upload"
 )
@@ -193,7 +193,7 @@ func (u *upstream) configureRoutes() {
 
 		// Proxy Job Services
 		wsRoute(projectPattern+`-/jobs/[0-9]+/proxy.ws\z`, channel.Handler(api)),
-		route("", projectPattern+`-/jobs/[0-9]+/proxy\z`, buildservice.Handler(api)),
+		route("", projectPattern+`-/jobs/[0-9]+/proxy\z`, serviceproxy.Handler(api)),
 
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		route("", apiPattern+`v4/jobs/request\z`, ciAPILongPolling),

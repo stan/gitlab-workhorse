@@ -15,15 +15,15 @@ import (
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
 )
 
-var buildServicesProxyPath = fmt.Sprintf("%s/-/jobs/1/proxy", testProject)
+var servicesProxyPath = fmt.Sprintf("%s/-/jobs/1/proxy", testProject)
 
-func TestBuildServicesDeniedHTTPProxy(t *testing.T) {
+func TestServicesDeniedHTTPProxy(t *testing.T) {
 	ts := testAuthServer(nil, 403, "Access denied")
 	defer ts.Close()
 	ws := startWorkhorseServer(ts.URL)
 	defer ws.Close()
 
-	resp, err := http.Get(ws.URL + "/" + buildServicesProxyPath)
+	resp, err := http.Get(ws.URL + "/" + servicesProxyPath)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func TestBuildServicesDeniedHTTPProxy(t *testing.T) {
 	assert.Equal(t, 403, resp.StatusCode)
 }
 
-func TestBuildServicesHTTPProxy(t *testing.T) {
+func TestServicesHTTPProxy(t *testing.T) {
 	message := []byte("ACK")
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -43,20 +43,20 @@ func TestBuildServicesHTTPProxy(t *testing.T) {
 	defer srv.Close()
 
 	out := &api.Response{
-		BuildService: &api.BuildServiceSettings{
+		Service: &api.ServiceProxySettings{
 			Url:    "http://" + srv.Listener.Addr().String(),
 			Header: http.Header{"Authorization": []string{"foo"}},
 		},
 	}
 
-	out.BuildService.Validate()
+	out.Service.Validate()
 
 	ts := testAuthServer(nil, 200, out)
 	defer ts.Close()
 	ws := startWorkhorseServer(ts.URL)
 	defer ws.Close()
 
-	resp, err := http.Get(ws.URL + "/" + buildServicesProxyPath)
+	resp, err := http.Get(ws.URL + "/" + servicesProxyPath)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func TestBuildServicesHTTPProxy(t *testing.T) {
 	assert.Equal(t, "foo", resp.Header.Get("ReturnHeader"))
 }
 
-func TestBuildServicesHTTPProxyPOST(t *testing.T) {
+func TestServicesHTTPProxyPOST(t *testing.T) {
 	payload := []byte("example body")
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -86,20 +86,20 @@ func TestBuildServicesHTTPProxyPOST(t *testing.T) {
 	defer srv.Close()
 
 	out := &api.Response{
-		BuildService: &api.BuildServiceSettings{
+		Service: &api.ServiceProxySettings{
 			Url:    "http://" + srv.Listener.Addr().String(),
 			Header: http.Header{"Authorization": []string{"foo"}},
 		},
 	}
 
-	out.BuildService.Validate()
+	out.Service.Validate()
 
 	ts := testAuthServer(nil, 200, out)
 	defer ts.Close()
 	ws := startWorkhorseServer(ts.URL)
 	defer ws.Close()
 
-	resp, err := http.Post(ws.URL+"/"+buildServicesProxyPath, "text/plain", bytes.NewReader(payload))
+	resp, err := http.Post(ws.URL+"/"+servicesProxyPath, "text/plain", bytes.NewReader(payload))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -198,7 +198,7 @@ func channelOkBody(remote *httptest.Server, header http.Header, subprotocols ...
 	if len(remote.TLS.Certificates) > 0 {
 		data := bytes.NewBuffer(nil)
 		pem.Encode(data, &pem.Block{Type: "CERTIFICATE", Bytes: remote.TLS.Certificates[0].Certificate[0]})
-		out.Terminal.CAPem = data.String()
+		out.Channel.CAPem = data.String()
 	}
 
 	return out
